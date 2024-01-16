@@ -506,7 +506,7 @@ class webull :
             'comboType': 'NORMAL',
             'orderType': orderType,
             'outsideRegularTradingHour': outsideRegularTradingHour,
-            'quantity': int(quant),
+            'quantity': float(quant) if orderType == 'MKT' else int(quant),
             'serialId': str(uuid.uuid4()),
             'tickerId': tId,
             'timeInForce': enforce
@@ -1471,7 +1471,7 @@ class paper_webull(webull):
             'lmtPrice': float(price),
             'orderType': orderType, # 'LMT','MKT'
             'outsideRegularTradingHour': outsideRegularTradingHour,
-            'quantity': int(quant),
+            'quantity': float(quant) if orderType == 'MKT' else int(quant),
             'serialId': str(uuid.uuid4()),
             'tickerId': tId,
             'timeInForce': enforce  # GTC or DAY

@@ -20,11 +20,17 @@ class urls :
     def account(self, account_id):
         return f'{self.base_trade_url}/v3/home/{account_id}'
 
+    def account_summary(self, account_id):
+        return f'{self.base_ustrade_url}/trading/v1/webull/account/accountAssetSummary/v2?secAccountId={account_id}'
+
     def account_id(self):
         return f'{self.base_trade_url}/account/getSecAccountList/v5'
 
     def account_activities(self, account_id):
         return f'{self.base_ustrade_url}/trade/v2/funds/{account_id}/activities'
+
+    def account_list(self):
+        return f'{self.base_new_trade_url}/trading/v1/global/tradetab/display?supportOmniIra=true'
 
     def active_gainers_losers(self, direction, region_code, rank_type, num) :
           if direction == 'gainer' :

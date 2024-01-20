@@ -319,30 +319,39 @@ class webull :
         '''
         headers = self.build_req_headers()
 
-        response = requests.get(self._urls.account_id(), headers=headers, timeout=self.timeout)
+        response = requests.get(self._urls.account_list(), headers=headers, timeout=self.timeout)
         result = response.json()
-        if result['success'] and len(result['data']) > 0 :
-            self.zone_var = str(result['data'][int(id)]['rzone'])
-            self._account_id = str(result['data'][int(id)]['secAccountId'])
+        if result.get('accountList') and id < len(result['accountList']) and result['accountList'][int(id)]['status'] != 'unopen': 
+            self.zone_var = str(result['accountList'][int(id)]['rzone'])
+            self._account_id = str(result['accountList'][int(id)]['secAccountId'])
             return self._account_id
         else:
             return None
 
-    def get_account(self):
+    def get_account(self, v2=False):
         '''
         get important details of account, positions, portfolio stance...etc
         '''
-        headers = self.build_req_headers()
-        response = requests.get(self._urls.account(self._account_id), headers=headers, timeout=self.timeout)
+        headers = self.build_req_headers(include_trade_token=True)
+        url = self._urls.account(self._account_id)
+        if v2:
+            url = self._urls.account_summary(self._account_id)
+        response = requests.get(url, headers=headers, timeout=self.timeout)
         result = response.json()
         return result
 
-    def get_positions(self):
+    def get_positions(self, v2=False):
         '''
         output standing positions of stocks
         '''
-        data = self.get_account()
-        return data['positions']
+        data = self.get_account(v2)
+        if v2:
+            if data.get('assetSummaryVO', {}).get('positions') is not None:
+                return data['assetSummaryVO']['positions']
+        else:
+            if data.get('positions') is not None:
+                return data['positions']
+        return None
 
     def get_portfolio(self):
         '''

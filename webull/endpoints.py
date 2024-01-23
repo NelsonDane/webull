@@ -174,7 +174,7 @@ class urls :
         return f'{self.base_ustrade_url}/trade/v2/option/placeOrder/{account_id}'
 
     def place_orders(self, account_id):
-        return f'{self.base_ustrade_url}/trade/order/{account_id}/placeStockOrder'
+        return f'{self.base_ustrade_url}/trading/v1/webull/order/stockOrderPlace?secAccountId={account_id}'
 
     def modify_order(self, account_id, order_id):
         return f'{self.base_ustrade_url}/trading/v1/webull/order/stockOrderModify?secAccountId={account_id}'

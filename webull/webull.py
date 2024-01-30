@@ -321,7 +321,7 @@ class webull :
 
         response = requests.get(self._urls.account_list(), headers=headers, timeout=self.timeout)
         result = response.json()
-        if result.get('accountList') and id < len(result['accountList']) and result['accountList'][int(id)]['status'] != 'unopen': 
+        if result.get('accountList') and id < len(result['accountList']) and result['accountList'][int(id)]['status'] == 'active':
             self.zone_var = str(result['accountList'][int(id)]['rzone'])
             self._account_id = str(result['accountList'][int(id)]['secAccountId'])
             return self._account_id

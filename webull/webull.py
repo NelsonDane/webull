@@ -515,13 +515,21 @@ class webull :
         else:
             raise ValueError('Must provide a stock symbol or a stock id')
 
+        # Webull only supports fractionals < 1 full share
+        if quant < 1:
+            quant = float(quant)
+        elif quant % 1 == 0: # Check for 1.0, 2.0 float etc
+            quant  = int(quant)
+        elif isinstance(quant, float):
+            raise ValueError('Fractional shares must be less than 1')
+
         headers = self.build_req_headers(include_trade_token=True, include_time=True)
         data = {
             'action': action,
             'comboType': 'NORMAL',
             'orderType': orderType,
             'outsideRegularTradingHour': outsideRegularTradingHour,
-            'quantity': float(quant) if orderType == 'MKT' else int(quant),
+            'quantity': quant,
             'serialId': str(uuid.uuid4()),
             'tickerId': tId,
             'timeInForce': enforce
@@ -541,6 +549,14 @@ class webull :
             data['trailingStopStep'] = float(trial_value)
             data['trailingType'] = str(trial_type)
 
+        # Check if account can place order (PDT check, etc)
+        check_response = requests.post(self._urls.check_stock_order(self._account_id), json=data, headers=headers, timeout=self.timeout)
+        check_result = check_response.json()
+        if not check_result['forward']:
+            warning = check_result['checkResultList'][0]
+            raise Exception(f'{warning['code']}: {warning['msg']}')
+
+        # Place order
         response = requests.post(self._urls.place_orders(self._account_id), json=data, headers=headers, timeout=self.timeout)
         return response.json()
 

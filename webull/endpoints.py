@@ -80,6 +80,9 @@ class urls :
     def check_otoco_orders(self, account_id):
         return f'{self.base_ustrade_url}/trade/v2/corder/stock/check/{account_id}'
 
+    def check_stock_order(self, account_id):
+        return f'{self.base_ustrade_url}/trading/v1/webull/order/stockOrderCheck?secAccountId={account_id}'
+
     def place_otoco_orders(self, account_id):
         return f'{self.base_ustrade_url}/trade/v2/corder/stock/place/{account_id}'
 

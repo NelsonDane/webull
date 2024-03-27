@@ -554,7 +554,7 @@ class webull :
         check_result = check_response.json()
         if not check_result['forward']:
             warning = check_result['checkResultList'][0]
-            raise Exception(f'{warning['code']}: {warning['msg']}')
+            raise Exception(f"{warning['code']}: {warning['msg']}")
 
         # Place order
         response = requests.post(self._urls.place_orders(self._account_id), json=data, headers=headers, timeout=self.timeout)
